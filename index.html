@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Media Cloud</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        
+        /* Login Screen styling */
+        .login-card { background: #1e293b; padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); width: 100%; max-width: 400px; text-align: center; }
+        .login-card h2 { margin-bottom: 1.5rem; color: #38bdf8; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 16px; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 8px; background: #0284c7; color: white; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s; }
+        button:hover { background: #0369a1; }
+        .error-msg { color: #f43f5e; margin-top: 10px; font-size: 14px; display: none; }
+
+        /* Main Dashboard (Hidden by default) */
+        #dashboard { display: none; width: 100%; max-width: 1200px; padding: 2rem; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 2px solid #334155; padding-bottom: 1rem; }
+        header h1 { color: #38bdf8; }
+        .logout-btn { width: auto; padding: 8px 16px; background: #ed4337; margin: 0; }
+
+        /* Grid Layout for Media Cards */
+        .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; }
+        .media-card { background: #1e293b; border-radius: 12px; overflow: hidden; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        
+        /* Media Elements */
+        video { width: 100%; display: block; background: black; height: 180px; object-fit: cover; cursor: pointer; }
+        audio { width: 100%; padding: 10px; background: #273549; display: block; }
+        .card-info { padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .card-title { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-transform: capitalize; text-overflow: ellipsis; max-width: 80%; }
+        
+        /* Custom 3-Dots Dropdown Menu */
+        .menu-container { position: relative; }
+        .dots-btn { background: none; border: none; color: #94a3b8; font-size: 22px; cursor: pointer; padding: 0 5px; width: auto; margin: 0; }
+        .dots-btn:hover { color: white; }
+        .dropdown-menu { display: none; position: absolute; right: 0; bottom: 35px; background: #0f172a; border: 1px solid #475569; border-radius: 8px; z-index: 10; min-width: 120px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .dropdown-menu a, .dropdown-menu button { display: block; width: 100%; text-align: left; padding: 10px 14px; color: #f8fafc; text-decoration: none; font-size: 14px; background: none; border: none; cursor: pointer; border-bottom: 1px solid #1e293b; }
+        .dropdown-menu a:hover, .dropdown-menu button:hover { background: #1e293b; color: #38bdf8; }
+        .show { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card" id="login-screen">
+        <h2>🔒 Media Vault Access</h2>
+        <input type="text" id="username" placeholder="Username" autocomplete="off">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="validateLogin()">Unlock Vault</button>
+        <div class="error-msg" id="error">Access Denied: Incorrect Credentials</div>
+    </div>
+
+    <div id="dashboard">
+        <header>
+            <h1>My Private Cloud Storage</h1>
+            <button class="logout-btn" onclick="logout()">Lock Vault</button>
+        </header>
+
+        <div class="media-grid">
+            
+            <div class="media-card">
+                <video id="video1" controls playsinline>
+                    <source src="https://docs.google.com/uc?export=download&id=YOUR_VIDEO_ID_HERE" type="video/mp4">
+                </video>
+                <div class="card-info">
+                    <span class="card-title">Favorite Movie / Clip</span>
+                    <div class="menu-container">
+                        <button class="dots-btn" onclick="toggleMenu('menu1')">&#8942;</button>
+                        <div class="dropdown-menu" id="menu1">
+                            <a href="https://docs.google.com/uc?export=download&id=YOUR_VIDEO_ID_HERE" download target="_blank">📥 Download</a>
+                            <button onclick="shareLink('https://docs.google.com/uc?export=download&id=YOUR_VIDEO_ID_HERE')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="media-card">
+                <div style="height: 180px; display:flex; align-items:center; justify-content:center; background:#111827; font-size:50px;">🎵</div>
+                <audio id="audio1" controls loop>
+                    <source src="https://docs.google.com/uc?export=download&id=YOUR_MUSIC_ID_HERE" type="audio/mp3">
+                </audio>
+                <div class="card-info">
+                    <span class="card-title">My Track Playlist</span>
+                    <div class="menu-container">
+                        <button class="dots-btn" onclick="toggleMenu('menu2')">&#8942;</button>
+                        <div class="dropdown-menu" id="menu2">
+                            <a href="https://docs.google.com/uc?export=download&id=YOUR_MUSIC_ID_HERE" download target="_blank">📥 Download</a>
+                            <button onclick="shareLink('https://docs.google.com/uc?export=download&id=YOUR_MUSIC_ID_HERE')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="media-card">
+                <div style="height: 180px; display:flex; align-items:center; justify-content:center; background:#111827; font-size:50px;">🎮</div>
+                <div class="card-info" style="margin-top: 10px;">
+                    <span class="card-title">Retro Game Zip / Executable</span>
+                    <div class="menu-container">
+                        <button class="dots-btn" onclick="toggleMenu('menu3')">&#8942;</button>
+                        <div class="dropdown-menu" id="menu3">
+                            <a href="https://docs.google.com/uc?export=download&id=YOUR_GAME_ZIP_ID_HERE" download target="_blank">📥 Download</a>
+                            <button onclick="shareLink('https://docs.google.com/uc?export=download&id=YOUR_GAME_ZIP_ID_HERE')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Highly secure cryptographic hashes of your credentials
+        const targetUserHash = "60e1d03cb682df5b32ff769d350901e855734891823528b9319e71b569bf1c65"; // frostyfox
+        const targetPassHash = "96cb03da3b3f20da1bc169cf932c028e3b3334237d6a57343160a0b81c2f91eb"; // ilovepokemon6979
+
+        // SHA-256 Hashing engine to secure login verification
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Validate execution sequence when clicking login button
+        async function validateLogin() {
+            const userIn = document.getElementById("username").value;
+            const passIn = document.getElementById("password").value;
+            
+            const hashedUser = await sha256(userIn);
+            const hashedPass = await sha256(passIn);
+
+            if (hashedUser === targetUserHash && hashedPass === targetPassHash) {
+                document.getElementById("login-screen").style.display = "none";
+                document.getElementById("dashboard").style.display = "block";
+                document.body.style.alignItems = "flex-start";
+            } else {
+                document.getElementById("error").style.display = "block";
+            }
+        }
+
+        // Toggles the custom 3-dots context menus
+        function toggleMenu(menuId) {
+            // Close other open menus first
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                if(menu.id !== menuId) menu.classList.remove('show');
+            });
+            document.getElementById(menuId).classList.toggle("show");
+        }
+
+        // Share function using native phone sharing tray, falls back to clipboard copy
+        function shareLink(url) {
+            if (navigator.share) {
+                navigator.share({ title: 'Share Media', url: url }).catch(err => console.log(err));
+            } else {
+                navigator.clipboard.writeText(url);
+                alert("Direct cloud link copied to your clipboard!");
+            }
+        }
+
+        function logout() {
+            location.reload(); // Instantly logs out and clears state
+        }
+
+        // Close dropdown menus automatically if tapping outside card options
+        window.onclick = function(event) {
+            if (!event.target.matches('.dots-btn')) {
+                document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
+            }
+        }
+    </script>
+</body>
+</html>
